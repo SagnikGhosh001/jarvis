@@ -21,8 +21,14 @@ export const questionHandler = async (c) => {
       );
     }
 
-    const result = await questionGraph
-      .invoke({ question: question.trim() });
+    const result = await questionGraph.invoke({
+      messages: [
+        {
+          role: "user",
+          content: question.trim(),
+        },
+      ],
+    });
 
     const answer = result.answer;
 

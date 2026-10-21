@@ -1,22 +1,28 @@
 import { END, START, StateGraph, StateSchema } from "@langchain/langgraph";
 import * as z from "zod";
 
-import { generateResponse } from "../llm/ollama.js";
+import { callModel, executeTools } from "../llm/ollama.js";
 
 const QuestionState = new StateSchema({
-  question: z.string(),
+  messages: z.array(z.any()).default([]),
   answer: z.string().default(""),
 });
 
-const answerQuestion = async (state) => {
-  const answer = await generateResponse(state.question);
+const routeAfterModel = (state) => {
+  const lastMessage = state.messages.at(-1);
 
-  return { answer };
+  if (lastMessage?.tool_calls?.length) {
+    return "execute_tools";
+  }
+
+  return END;
 };
 
 const graph = new StateGraph(QuestionState)
-  .addNode("answer_question", answerQuestion)
-  .addEdge(START, "answer_question")
-  .addEdge("answer_question", END);
+  .addNode("call_model", callModel)
+  .addNode("execute_tools", executeTools)
+  .addEdge(START, "call_model")
+  .addConditionalEdges("call_model", routeAfterModel)
+  .addEdge("execute_tools", "call_model");
 
 export const questionGraph = graph.compile();
