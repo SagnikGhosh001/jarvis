@@ -1,3 +1,4 @@
+import { completeTask } from "./completeTask.js";
 import { createTask } from "./createTask.js";
 import { listTasks } from "./listTask.js";
 
@@ -31,11 +32,29 @@ export const tools = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "complete_task",
+      description: "Mark a task as completed using its ID.",
+      parameters: {
+        type: "object",
+        properties: {
+          id: {
+            type: "integer",
+            description: "The ID of the task to complete",
+          },
+        },
+        required: ["id"],
+      },
+    },
+  },
 ];
 
 const toolHandlers = {
   create_task: createTask,
   list_tasks: listTasks,
+  complete_task: completeTask,
 };
 
 export const executeTool = (name, args) => {
@@ -45,5 +64,5 @@ export const executeTool = (name, args) => {
     throw new Error(`Unknown tool: ${name}`);
   }
 
-  return handler(args.title);
+  return handler(args);
 };

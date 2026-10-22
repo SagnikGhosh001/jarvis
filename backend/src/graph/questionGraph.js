@@ -1,4 +1,10 @@
-import { END, START, StateGraph, StateSchema } from "@langchain/langgraph";
+import {
+  END,
+  MemorySaver,
+  START,
+  StateGraph,
+  StateSchema,
+} from "@langchain/langgraph";
 import * as z from "zod";
 
 import { callModel, executeTools } from "../llm/ollama.js";
@@ -18,6 +24,8 @@ const routeAfterModel = (state) => {
   return END;
 };
 
+const checkpointer = new MemorySaver();
+
 const graph = new StateGraph(QuestionState)
   .addNode("call_model", callModel)
   .addNode("execute_tools", executeTools)
@@ -25,4 +33,4 @@ const graph = new StateGraph(QuestionState)
   .addConditionalEdges("call_model", routeAfterModel)
   .addEdge("execute_tools", "call_model");
 
-export const questionGraph = graph.compile();
+export const questionGraph = graph.compile({ checkpointer });
