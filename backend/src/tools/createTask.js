@@ -1,6 +1,6 @@
 import { db } from "../db/database.js";
 
-export const createTask = (title) => {
+export const createTask = ({ title }) => {
   if (typeof title !== "string" || !title.trim()) {
     throw new Error("Task title is required");
   }

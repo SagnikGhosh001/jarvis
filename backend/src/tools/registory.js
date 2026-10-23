@@ -51,14 +51,14 @@ export const tools = [
   },
 ];
 
-const toolHandlers = {
-  create_task: createTask,
-  list_tasks: listTasks,
-  complete_task: completeTask,
+export const toolHandlers = {
+  create_task: { fn: createTask, approval: true },
+  list_tasks: { fn: listTasks, approval: false },
+  complete_task: { fn: completeTask, approval: true },
 };
 
 export const executeTool = (name, args) => {
-  const handler = toolHandlers[name];
+  const handler = toolHandlers[name].fn;
 
   if (!handler) {
     throw new Error(`Unknown tool: ${name}`);
