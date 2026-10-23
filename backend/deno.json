@@ -3,9 +3,11 @@
     "dev": "deno run --watch --allow-net main.ts"
   },
   "imports": {
+    "libsql": "npm:libsql@^0.5.29",
     "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
     "@hono/hono": "jsr:@hono/hono@^4.13.13",
     "@langchain/langgraph": "npm:@langchain/langgraph@^1.5.1",
+    "@langchain/langgraph-checkpoint-sqlite": "npm:@langchain/langgraph-checkpoint-sqlite@^1.1.0",
     "@std/assert": "jsr:@std/assert@1",
     "ollama": "npm:ollama@^0.6.4",
     "zod": "npm:zod@^4.6.7"

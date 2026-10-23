@@ -1,13 +1,8 @@
-import {
-  END,
-  MemorySaver,
-  START,
-  StateGraph,
-  StateSchema,
-} from "@langchain/langgraph";
+import { END, START, StateGraph, StateSchema } from "@langchain/langgraph";
 import * as z from "zod";
 
 import { callModel, executeTools } from "../llm/ollama.js";
+import { checkpointer } from "../db/checkPointer.js";
 
 const QuestionState = new StateSchema({
   messages: z.array(z.any()).default([]),
@@ -23,8 +18,6 @@ const routeAfterModel = (state) => {
 
   return END;
 };
-
-const checkpointer = new MemorySaver();
 
 const graph = new StateGraph(QuestionState)
   .addNode("call_model", callModel)
